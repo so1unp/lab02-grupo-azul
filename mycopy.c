@@ -24,10 +24,15 @@ void copy_system_calls(const char *src, const char *dst) {
     char buffer[BUFFER_SIZE];
     ssize_t bytes;
     while ((bytes = read(fd_src, buffer, BUFFER_SIZE)) > 0) {
-        if (write(fd_dst, buffer, bytes) != bytes) {
-            perror("Error escribiendo");
-            break;
-        }
+        ssize_t written = write(fd_dst, buffer, (size_t)bytes);
+    if (written != bytes) {
+        perror("Error escribiendo");
+        break;
+    }
+    }
+
+    if (bytes < 0) {
+    perror("Error leyendo");
     }
 
     close(fd_src);
